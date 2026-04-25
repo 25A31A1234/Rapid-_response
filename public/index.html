@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapid Crisis Response System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #e91e63;
+            --secondary: #00bcd4;
+            --dark: #0a0e27;
+            --darker: #050812;
+            --light: #ffffff;
+            --text: #e0e0e0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background: var(--dark);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #0f0f2e 100%);
+            background-attachment: fixed;
+            z-index: -2;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-1000px) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(233, 30, 99, 0.2);
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff1744 100%);
+            color: var(--light);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #00bcd4 100%);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 188, 212, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .landing-page {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideDown 0.8s ease;
+        }
+
+        .hero-quote {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            font-style: italic;
+            font-weight: 300;
+            animation: slideUp 0.8s ease 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 3rem;
+            animation: slideUp 0.8s ease 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideUp 0.8s ease 0.6s both;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .auth-page {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(135deg, rgba(10, 14, 39, 0.8) 0%, rgba(0, 0, 0, 0.85) 100%), url('https://images.unsplash.com/photo-1576091160550-112173f7f869?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: 0;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: var(--glass-bg);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(233, 30, 99, 0.2);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--secondary);
+            cursor: pointer;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 1rem;
+        }
+
+        .main-dashboard-page {
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .dashboard-page {
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .navbar-brand i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.3rem;
+        }
+
+        .user-info span:first-child {
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .user-info span:last-child {
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .dashboard-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 3rem 2rem;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .main-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .emergency-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            justify-items: center;
+        }
+
+        .emergency-categories-grid .glass-card:nth-child(5) {
+            grid-column: 1 / -1;
+            max-width: 350px;
+        }
+
+        .location-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .location-modal.active {
+            display: flex;
+        }
+
+        .location-modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.5s ease;
+        }
+
+        .location-modal-icon {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .location-modal-content h2 {
+            font-size: 1.8rem;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+
+        .location-modal-content p {
+            color: var(--text);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .location-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .location-modal-buttons .btn {
+            flex: 1;
+        }
+
+        .category-card {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+            z-index: 1;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
+        }
+
+        .category-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-card p {
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .sos-page {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .sos-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .sos-type {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .sos-button {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #ff1744 100%);
+            border: none;
+            color: var(--light);
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(233, 30, 99, 0.6);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            position: relative;
+        }
+
+        .sos-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 60px rgba(233, 30, 99, 0.8);
+        }
+
+        .sos-button:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 40px rgba(233, 30, 99, 0.6), 0 0 80px rgba(233, 30, 99, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(233, 30, 99, 0.8), 0 0 100px rgba(233, 30, 99, 0.5);
+            }
+        }
+
+        .sos-info {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .sos-info h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .info-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+        }
+
+        .info-line:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: var(--light);
+        }
+
+        .others-page {
+            flex-direction: column;
+        }
+
+        .others-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 3rem 2rem;
+        }
+
+        .others-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .others-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subcategories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .subcategory-card {
+            cursor: pointer;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .subcategory-card i {
+            display: block;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-page {
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .admin-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h2 {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .alert-card {
+            cursor: pointer;
+            position: relative;
+            border-left: 5px solid var(--primary);
+        }
+
+        .alert-timestamp {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+        }
+
+        .alert-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            background: rgba(233, 30, 99, 0.2);
+            color: var(--primary);
+        }
+
+        .maps-container {
+            display: flex;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 600px;
+        }
+
+        .map-section {
+            flex: 1;
+            position: relative;i want
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        #hospitalsMap {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hospitals-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            border-radius: 15px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .hospital-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hospital-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .hospital-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .hospital-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .hospital-item p {
+            color: var(--text);
+            font-size: 0.85rem;
+            margin: 0.3rem 0;
+        }
+
+        .hospital-distance {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Intro Page */
+        .intro-page {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(135deg, rgba(10, 14, 39, 0.75) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://images.unsplash.com/photo-1587280591766-3f1b25b0d0c4?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: 0;
+        }
+
+        .intro-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 600px;
+            animation: slideUp 0.8s ease;
+        }
+
+        .intro-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .intro-title {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .intro-description {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .intro-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .intro-feature {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .intro-feature i {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            min-width: 30px;
+        }
+
+        .intro-feature span {
+            color: var(--text);
+        }
+
+        /* Greeting Page */
+        .greeting-page {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.15) 0%, rgba(0, 188, 212, 0.1) 100%);
+        }
+
+        .greeting-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 30px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.6s ease;
+        }
+
+        .greeting-icon {
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .greeting-text h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .greeting-text p {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .greeting-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* Reassurance Modal */
+        .reassurance-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reassurance-modal.active {
+            display: flex;
+        }
+
+        .reassurance-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s ease;
+        }
+
+        .reassurance-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .reassurance-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: bold;
+            animation: slideDown 0.8s ease 0.2s both;
+        }
+
+        .reassurance-message {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            animation: slideDown 0.8s ease 0.4s both;
+        }
+
+        .reassurance-details {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary);
+            text-align: left;
+            animation: slideDown 0.8s ease 0.6s both;
+        }
+
+        .reassurance-details p {
+            color: var(--text);
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .reassurance-details strong {
+            color: var(--secondary);
+        }
+
+        .reassurance-countdown {
+            font-size: 3rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            animation: slideDown 0.8s ease 0.8s both;
+        }
+
+        .reassurance-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #4caf50;
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.5s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-quote {
+                font-size: 1.3rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .intro-title {
+                font-size: 2rem;
+            }
+
+            .intro-features {
+                gap: 0.8rem;
+            }
+
+            .intro-feature {
+                padding: 0.8rem;
+                font-size: 0.95rem;
+            }
+
+            .greeting-card {
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+
+            .greeting-text h2 {
+                font-size: 1.8rem;
+            }
+
+            .reassurance-content {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .reassurance-icon {
+                font-size: 3.5rem;
+            }
+
+            .reassurance-title {
+                font-size: 1.8rem;
+            }
+
+            .reassurance-message {
+                font-size: 1.1rem;
+            }
+
+            .reassurance-countdown {
+                font-size: 2rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sos-button {
+                width: 150px;
+                height: 150px;
+                font-size: 2.5rem;
+            }
+
+            .subcategories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .alerts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-content {
+                padding: 1.5rem;
+            }
+
+            .maps-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .map-section {
+                height: 400px;
+            }
+
+            .hospitals-list {
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-quote {
+                font-size: 1.1rem;
+            }
+
+            .intro-title {
+                font-size: 1.6rem;
+            }
+
+            .intro-features {
+                gap: 0.6rem;
+            }
+
+            .intro-feature {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .greeting-card {
+                padding: 1.5rem;
+                max-width: 95%;
+            }
+
+            .greeting-text h2 {
+                font-size: 1.5rem;
+            }
+
+            .greeting-text p {
+                font-size: 1rem;
+            }
+
+            .reassurance-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .reassurance-icon {
+                font-size: 3rem;
+            }
+
+            .reassurance-title {
+                font-size: 1.5rem;
+            }
+
+            .reassurance-message {
+                font-size: 1rem;
+            }
+
+            .reassurance-countdown {
+                font-size: 2rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .sos-button {
+                width: 130px;
+                height: 130px;
+                font-size: 2rem;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Reassurance Modal (Success Message after SOS) -->
+    <div class="reassurance-modal" id="reassuranceModal">
+        <div class="reassurance-content">
+            <div class="reassurance-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="reassurance-title">DON'T WORRY!</h2>
+            <p class="reassurance-message">Help is on the way 🚀</p>
+            <div class="reassurance-details" id="reassuranceDetails">
+                <p><strong><i class="fas fa-clock"></i> Estimated Arrival:</strong> 2-3 minutes</p>
+                <p><strong><i class="fas fa-map-marker-alt"></i> Your Location:</strong> GPS Tracked</p>
+                <p><strong><i class="fas fa-phone"></i> Responders Alerted:</strong> Notified instantly</p>
+            </div>
+            <div class="reassurance-countdown" id="reassuranceCountdown">3</div>
+            <p style="color: var(--secondary); font-size: 0.95rem;">Stay calm, help is arriving...</p>
+            <button class="btn btn-primary reassurance-button" onclick="closeReassurance()">
+                <i class="fas fa-check"></i> I Understand
+            </button>
+        </div>
+    </div>
+
+    <!-- Location Permission Modal -->
+    <div class="location-modal" id="locationModal">
+        <div class="location-modal-content">
+            <div class="location-modal-icon">
+                <i class="fas fa-location-dot"></i>
+            </div>
+            <h2>Enable Location Access</h2>
+            <p>We need your location to send precise emergency coordinates to responders. This helps us serve you faster.</p>
+            <div class="location-modal-buttons">
+                <button class="btn btn-outline" onclick="denyLocation()">
+                    <i class="fas fa-times"></i> Deny
+                </button>
+                <button class="btn btn-primary" onclick="allowLocation()">
+                    <i class="fas fa-check"></i> Allow
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intro Page (Welcome with Background) -->
+    <div class="page intro-page" id="introPage">
+        <div class="intro-content">
+            <div class="intro-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <h1 class="intro-title">Welcome to Crisis Response</h1>
+            <p class="intro-description">
+                Your trusted emergency response system, available 24/7 to help you in critical moments.
+            </p>
+            <div class="intro-features">
+                <div class="intro-feature">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Instant Emergency Alert - One Click SOS</span>
+                </div>
+                <div class="intro-feature">
+                    <i class="fas fa-location-dot"></i>
+                    <span>Real-time Location Tracking & Sharing</span>
+                </div>
+                <div class="intro-feature">
+                    <i class="fas fa-ambulance"></i>
+                    <span>Fastest Response - Average 2-3 Minutes</span>
+                </div>
+                <div class="intro-feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure & Confidential Data Protection</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="skipIntro()" style="width: 100%; padding: 12px;">
+                <i class="fas fa-arrow-right"></i> Get Started
+            </button>
+        </div>
+    </div>
+
+    <!-- Greeting Page (After Login) -->
+    <div class="page greeting-page" id="greetingPage">
+        <div class="greeting-card">
+            <div class="greeting-icon">
+                <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <div class="greeting-text">
+                <h2>Hello, <span id="greetingUserName">there</span>! 👋</h2>
+                <p>What's your emergency?</p>
+                <p style="font-size: 0.95rem; color: var(--secondary); font-style: normal; margin-top: 1rem;">
+                    <i class="fas fa-shield-alt"></i> We're here to help immediately
+                </p>
+            </div>
+            <button class="btn btn-primary greeting-button" onclick="showPage('emergency-selection')">
+                <i class="fas fa-heartbeat"></i> Report Emergency
+            </button>
+            <button class="btn btn-outline greeting-button" onclick="showPage('dashboard')">
+                <i class="fas fa-th"></i> View All Services
+            </button>
+            <button class="btn btn-outline greeting-button" style="padding: 8px 16px; font-size: 0.9rem;" onclick="localStorage.removeItem('userLocation'); showLocationModal();">
+                <i class="fas fa-location-dot"></i> Test Location Permission
+            </button>
+        </div>
+    </div>
+
+    <!-- Landing Page -->
+    <div class="page landing-page" id="landingPage">
+        <div class="hero-content">
+            <h1><i class="fas fa-heartbeat"></i> Rapid Crisis Response</h1>
+            <p class="hero-quote">"Every second matters in saving lives."</p>
+            <p class="hero-subtitle">Your trusted emergency response system</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="showAuth('signup')">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                <button class="btn btn-secondary" onclick="showAuth('signin')">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Page -->
+    <div class="page auth-page" id="authPage">
+        <div class="auth-container">
+            <span class="back-btn" onclick="showPage('landing')">
+                <i class="fas fa-arrow-left"></i> Back
+            </span>
+            <div class="glass-card">
+                <div class="auth-header">
+                    <h2 id="authTitle">Sign In</h2>
+                    <p id="authSubtitle">Enter your details to continue</p>
+                </div>
+                <form onsubmit="handleAuth(event)">
+                    <div class="form-group" id="nameGroup" style="display: none;">
+                        <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="phone" placeholder="+1 (555) 123-4567" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group" id="passwordGroup" style="display: none;">
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-arrow-right"></i> Continue
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Page (4 Options) -->
+    <div class="page dashboard-page" id="dashboardPage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>Rapid Crisis Response</span>
+            </div>
+            <div class="navbar-actions">
+                <div class="user-info">
+                    <span id="userName">User</span>
+                    <span id="userPhone">Phone</span>
+                </div>
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-th"></i> Dashboard</h2>
+                <p>Select a service to get started</p>
+            </div>
+            <div class="main-categories-grid">
+                <div class="glass-card category-card" onclick="showPage('emergency-selection')">
+                    <div class="category-icon">🚨</div>
+                    <h3>Emergency Help</h3>
+                    <p>Get immediate emergency assistance for any crisis situation</p>
+                </div>
+                <div class="glass-card category-card" onclick="showPage('hospitals')">
+                    <div class="category-icon">🏥</div>
+                    <h3>Nearest Hospitals</h3>
+                    <p>Find the nearest medical facilities in your area</p>
+                </div>
+                <div class="glass-card category-card" onclick="showPage('volunteers')">
+                    <div class="category-icon">👥</div>
+                    <h3>Volunteers</h3>
+                    <p>Connect with trained volunteers for community support</p>
+                </div>
+                <div class="glass-card category-card" onclick="showPage('ambulance')">
+                    <div class="category-icon">🚑</div>
+                    <h3>Ambulance</h3>
+                    <p>Request an ambulance for medical emergency</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hospitals Page -->
+    <div class="page dashboard-page" id="hospitalsPage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hospital"></i>
+                <span>Nearest Hospitals</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="showPage('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-map-marker-alt"></i> Nearby Hospitals on Map</h2>
+                <p>Click on hospitals to get directions or call for information</p>
+            </div>
+            <div class="maps-container">
+                <div class="map-section">
+                    <div id="hospitalsMap"></div>
+                </div>
+                <div class="hospitals-list">
+                    <div id="hospitalsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volunteers Page -->
+    <div class="page dashboard-page" id="volunteersPage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-people-group"></i>
+                <span>Trained Volunteers</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="showPage('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-hands-helping"></i> Community Volunteers</h2>
+                <p>Get support from trained emergency volunteers in your area</p>
+            </div>
+            <div class="categories-grid">
+                <div class="glass-card category-card">
+                    <div class="category-icon">👨‍🚒</div>
+                    <h3>John Smith</h3>
+                    <p>First Aid Expert • 0.8 km away • Rating: 4.9/5</p>
+                </div>
+                <div class="glass-card category-card">
+                    <div class="category-icon">👩‍⚕️</div>
+                    <h3>Sarah Williams</h3>
+                    <p>Medical Professional • 1.2 km away • Rating: 4.8/5</p>
+                </div>
+                <div class="glass-card category-card">
+                    <div class="category-icon">👨‍🚨</div>
+                    <h3>Michael Johnson</h3>
+                    <p>Emergency Responder • 1.5 km away • Rating: 5.0/5</p>
+                </div>
+                <div class="glass-card category-card">
+                    <div class="category-icon">👩‍⚒️</div>
+                    <h3>Emma Davis</h3>
+                    <p>Rescue Trained • 1.8 km away • Rating: 4.7/5</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ambulance Page -->
+    <div class="page dashboard-page" id="ambulancePage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-ambulance"></i>
+                <span>Ambulance Services</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="showPage('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-truck-medical"></i> Available Ambulances</h2>
+                <p>Request an ambulance for medical emergency transport</p>
+            </div>
+            <div class="categories-grid">
+                <div class="glass-card category-card">
+                    <div class="category-icon">🚑</div>
+                    <h3>Basic Life Support</h3>
+                    <p>Standard ambulance • Waiting time: 2-3 min • Available: 5</p>
+                </div>
+                <div class="glass-card category-card">
+                    <div class="category-icon">🚑</div>
+                    <h3>Advanced Life Support</h3>
+                    <p>Advanced care unit • Waiting time: 3-4 min • Available: 3</p>
+                </div>
+                <div class="glass-card category-card">
+                    <div class="category-icon">🚑</div>
+                    <h3>Intensive Care Transport</h3>
+                    <p>ICU equipped • Waiting time: 4-5 min • Available: 2</p>
+                </div>
+                <div class="glass-card category-card" onclick="selectEmergency('Ambulance Request', '🚑')">
+                    <div class="category-icon">📞</div>
+                    <h3>Call Ambulance</h3>
+                    <p>Click here to request emergency ambulance with SOS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Selection Page (5 Categories) -->
+    <div class="page dashboard-page" id="emergencySelectionPage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>Emergency Categories</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="showPage('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Select Emergency Type</h2>
+                <p>Choose the type of emergency you need help with</p>
+            </div>
+            <div class="emergency-categories-grid">
+                <div class="glass-card category-card" onclick="selectEmergency('Fire Emergency', '🔥')">
+                    <div class="category-icon">🔥</div>
+                    <h3>Fire Emergency</h3>
+                    <p>Fire or explosion incidents</p>
+                </div>
+                <div class="glass-card category-card" onclick="selectEmergency('Medical Emergency', '🏥')">
+                    <div class="category-icon">🏥</div>
+                    <h3>Medical Emergency</h3>
+                    <p>Urgent medical assistance</p>
+                </div>
+                <div class="glass-card category-card" onclick="selectEmergency('Crime Emergency', '🛡️')">
+                    <div class="category-icon">🛡️</div>
+                    <h3>Crime Emergency</h3>
+                    <p>Criminal activity report</p>
+                </div>
+                <div class="glass-card category-card" onclick="selectEmergency('Natural Disaster', '🌪️')">
+                    <div class="category-icon">🌪️</div>
+                    <h3>Natural Disaster</h3>
+                    <p>Earthquakes, floods, storms</p>
+                </div>
+                <div class="glass-card category-card" onclick="showPage('others')">
+                    <div class="category-icon">⋯</div>
+                    <h3>Others</h3>
+                    <p>More emergency categories</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Others Category Page -->
+    <div class="page others-page" id="othersPage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>Other Emergencies</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="showPage('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+        <div class="others-content">
+            <div class="others-header">
+                <h2><i class="fas fa-list"></i> Other Emergency Categories</h2>
+                <p>Select any emergency type below</p>
+            </div>
+            <div class="subcategories-grid">
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Road Accident', '🚗')">
+                    <i class="fas fa-car-crash"></i>
+                    <div>Road Accident</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Missing Person', '👤')">
+                    <i class="fas fa-person-walking-arrow-loop-left"></i>
+                    <div>Missing Person</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Animal Attack', '🦁')">
+                    <i class="fas fa-paw"></i>
+                    <div>Animal Attack</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Flood Rescue', '🌊')">
+                    <i class="fas fa-water"></i>
+                    <div>Flood Rescue</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Building Collapse', '🏢')">
+                    <i class="fas fa-building"></i>
+                    <div>Building Collapse</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Gas Leak', '☁️')">
+                    <i class="fas fa-wind"></i>
+                    <div>Gas Leak</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Electrical Hazard', '⚡')">
+                    <i class="fas fa-bolt"></i>
+                    <div>Electrical Hazard</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Water Emergency', '💧')">
+                    <i class="fas fa-droplet"></i>
+                    <div>Water Emergency</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Kid Lost', '👶')">
+                    <i class="fas fa-child"></i>
+                    <div>Kid Lost</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Elderly Help', '👴')">
+                    <i class="fas fa-person-cane"></i>
+                    <div>Elderly Help</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Suicide Prevention', '🆘')">
+                    <i class="fas fa-hands-praying"></i>
+                    <div>Suicide Prevention</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Domestic Violence', '🚪')">
+                    <i class="fas fa-door-closed"></i>
+                    <div>Domestic Violence</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Cyber Crime', '🖥️')">
+                    <i class="fas fa-laptop"></i>
+                    <div>Cyber Crime</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Public Disturbance', '📢')">
+                    <i class="fas fa-volume-high"></i>
+                    <div>Public Disturbance</div>
+                </div>
+                <div class="glass-card subcategory-card" onclick="selectEmergency('Unknown Emergency', '❓')">
+                    <i class="fas fa-question"></i>
+                    <div>Unknown Emergency</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOS Page -->
+    <div class="page sos-page" id="sosPage">
+        <nav class="navbar" style="position: absolute; top: 0; width: 100%;">
+            <div class="navbar-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>Emergency Alert</span>
+            </div>
+            <button class="btn btn-outline" style="padding: 8px 16px;" onclick="cancelSOS()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </nav>
+        <div class="sos-container" style="margin-top: 80px;">
+            <p class="sos-type" id="sosEmergencyType">Emergency Type</p>
+            <button class="sos-button" onclick="uploadSOS()">
+                S.O.S
+            </button>
+            <div class="sos-info" id="sosInfoBox" style="display: none;">
+                <h3>Your Details</h3>
+                <div class="info-line">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value" id="sosName">-</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value" id="sosPhone">-</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Emergency:</span>
+                    <span class="info-value" id="sosEmergency">-</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Location:</span>
+                    <span class="info-value" id="sosLocation">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="page admin-page" id="adminPage">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Dashboard</span>
+            </div>
+            <button class="btn btn-outline" style="padding: 8px 16px;" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2>Active Emergency Alerts</h2>
+                <span style="color: var(--secondary); font-size: 0.95rem;">Total: <span id="alertCount">0</span></span>
+            </div>
+            <div class="alerts-grid" id="alertsList">
+                <p style="text-align: center; color: var(--text);">No alerts yet</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDemokey&libraries=marker"></script>
+    <script>        // ============ UTILITIES ============
+        const state = {
+            currentUser: null,
+            selectedEmergency: null,
+            userLocation: null,
+            alerts: [],
+            authMode: 'signin',
+            map: null,
+            markers: [],
+            infoWindows: []
+        };
+
+        // Hospitals data
+        const hospitalsData = [
+            {
+                name: 'City General Hospital',
+                lat: 40.7128,
+                lng: -74.0060,
+                distance: '2.5 km',
+                emergency: '24/7',
+                beds: '300+',
+                phone: '+1-555-0001',
+                address: '123 Medical St, Downtown'
+            },
+            {
+                name: 'Medical Care Center',
+                lat: 40.7250,
+                lng: -73.9960,
+                distance: '3.8 km',
+                emergency: '24/7',
+                beds: '150+',
+                phone: '+1-555-0002',
+                address: '456 Health Ave, Midtown'
+            },
+            {
+                name: 'Emergency Hospital',
+                lat: 40.7060,
+                lng: -74.0100,
+                distance: '5.2 km',
+                emergency: '24/7',
+                beds: '200+',
+                phone: '+1-555-0003',
+                address: '789 Crisis Rd, Westside'
+            },
+            {
+                name: 'Trauma Center',
+                lat: 40.7300,
+                lng: -73.9850,
+                distance: '6.1 km',
+                emergency: '24/7',
+                beds: '100+',
+                phone: '+1-555-0004',
+                address: '321 Emergency Ln, Eastside'
+            }
+        ];
+
+        // Emergency Contact Numbers
+        const emergencyNumbers = {
+            'Fire Emergency': '9030774177',
+            'Medical Emergency': '9876543210',
+            'Crime Emergency': '9123456789',
+            'Natural Disaster': '9234567890',
+            'Road Accident': '9345678901',
+            'Missing Person': '9456789012',
+            'Animal Attack': '9567890123',
+            'Flood Rescue': '9678901234',
+            'Building Collapse': '9789012345',
+            'Gas Leak': '9890123456',
+            'Electrical Hazard': '9901234567',
+            'Water Emergency': '9000000001',
+            'Kid Lost': '9000000002',
+            'Elderly Help': '9000000003',
+            'Suicide Prevention': '9000000004',
+            'Domestic Violence': '9000000005',
+            'Cyber Crime': '9000000006',
+            'Public Disturbance': '9000000007',
+            'Unknown Emergency': '9000000008',
+            'Ambulance Request': '9111111111'
+        };
+
+        // Create particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Page management
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            const pageMap = {
+                'intro': 'introPage',
+                'landing': 'landingPage',
+                'auth': 'authPage',
+                'greeting': 'greetingPage',
+                'dashboard': 'dashboardPage',
+                'emergency-selection': 'emergencySelectionPage',
+                'hospitals': 'hospitalsPage',
+                'volunteers': 'volunteersPage',
+                'ambulance': 'ambulancePage',
+                'others': 'othersPage',
+                'sos': 'sosPage',
+                'admin': 'adminPage'
+            };
+            
+            if (pageMap[page]) {
+                document.getElementById(pageMap[page]).classList.add('active');
+                
+                // Initialize map when hospitals page is shown
+                if (page === 'hospitals') {
+                    setTimeout(() => {
+                        initHospitalsMap();
+                    }, 100);
+                }
+            }
+        }
+
+        function skipIntro() {
+            showPage('landing');
+        }
+
+        function showAuth(mode) {
+            state.authMode = mode;
+            document.getElementById('nameGroup').style.display = mode === 'signup' ? 'block' : 'none';
+            document.getElementById('passwordGroup').style.display = mode === 'signup' ? 'block' : 'none';
+            document.getElementById('authTitle').innerText = mode === 'signup' ? 'Create Account' : 'Sign In';
+            document.getElementById('authSubtitle').innerText = mode === 'signup' 
+                ? 'Set up your account'
+                : 'Enter your credentials';
+            showPage('auth');
+        }
+
+        // Initialize Hospitals Map
+        function initHospitalsMap() {
+            const mapElement = document.getElementById('hospitalsMap');
+            if (!mapElement) return;
+
+            const centerLocation = { lat: 40.7200, lng: -73.9960 };
+
+            state.map = new google.maps.Map(mapElement, {
+                zoom: 13,
+                center: centerLocation,
+                styles: [
+                    { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+                    { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+                    { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+                    {
+                        featureType: 'administrative.locality',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'poi',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'poi.park',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#263c3f' }]
+                    },
+                    {
+                        featureType: 'poi.park',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#6b9080' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#38414e' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'geometry.stroke',
+                        stylers: [{ color: '#212a37' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#9ca5b3' }]
+                    },
+                    {
+                        featureType: 'road.highway',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#746855' }]
+                    },
+                    {
+                        featureType: 'road.highway',
+                        elementType: 'geometry.stroke',
+                        stylers: [{ color: '#1f2835' }]
+                    },
+                    {
+                        featureType: 'road.highway',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#f3751b' }]
+                    },
+                    {
+                        featureType: 'transit',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#2f3948' }]
+                    },
+                    {
+                        featureType: 'transit.station',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#17263c' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#515c6d' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'labels.text.stroke',
+                        stylers: [{ color: '#17263c' }]
+                    }
+                ]
+            });
+
+            // Clear existing markers
+            state.markers.forEach(marker => marker.setMap(null));
+            state.infoWindows.forEach(iw => iw.close());
+            state.markers = [];
+            state.infoWindows = [];
+
+            // Add hospital markers
+            hospitalsData.forEach((hospital, index) => {
+                const marker = new google.maps.Marker({
+                    position: { lat: hospital.lat, lng: hospital.lng },
+                    map: state.map,
+                    title: hospital.name,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="color: #000; padding: 10px;">
+                            <h3 style="margin: 0; color: #e91e63;">${hospital.name}</h3>
+                            <p style="margin: 5px 0; font-size: 12px;">${hospital.address}</p>
+                            <p style="margin: 5px 0; font-size: 12px;"><strong>Phone:</strong> ${hospital.phone}</p>
+                            <p style="margin: 5px 0; font-size: 12px;"><strong>Emergency:</strong> ${hospital.emergency}</p>
+                        </div>
+                    `
+                });
+
+                marker.addListener('click', () => {
+                    // Close all other info windows
+                    state.infoWindows.forEach(iw => iw.close());
+                    infoWindow.open(state.map, marker);
+                });
+
+                state.markers.push(marker);
+                state.infoWindows.push(infoWindow);
+            });
+
+            // Populate hospitals list
+            populateHospitalsList();
+        }
+
+        // Populate Hospitals List
+        function populateHospitalsList() {
+            const listContainer = document.getElementById('hospitalsList');
+            listContainer.innerHTML = hospitalsData.map((hospital, index) => `
+                <div class="hospital-item" onclick="focusHospital(${index})">
+                    <h4><i class="fas fa-hospital"></i> ${hospital.name}</h4>
+                    <p><strong style="color: var(--secondary);">Distance:</strong> <span class="hospital-distance">${hospital.distance}</span></p>
+                    <p><strong style="color: var(--secondary);">Address:</strong> ${hospital.address}</p>
+                    <p><strong style="color: var(--secondary);">Phone:</strong> <a href="tel:${hospital.phone}" style="color: var(--primary); text-decoration: none;">${hospital.phone}</a></p>
+                    <p><strong style="color: var(--secondary);">Emergency:</strong> ${hospital.emergency} | <strong>Beds:</strong> ${hospital.beds}</p>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 0.5rem; padding: 8px 16px;" onclick="event.stopPropagation(); openDirections('${hospital.lat}', '${hospital.lng}', '${hospital.name}')">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Focus on a specific hospital
+        function focusHospital(index) {
+            if (state.map && state.markers[index]) {
+                const hospital = hospitalsData[index];
+                state.map.setCenter({ lat: hospital.lat, lng: hospital.lng });
+                state.map.setZoom(15);
+                
+                // Close all other info windows
+                state.infoWindows.forEach(iw => iw.close());
+                
+                // Open the selected hospital's info window
+                if (state.infoWindows[index]) {
+                    state.infoWindows[index].open(state.map, state.markers[index]);
+                }
+            }
+        }
+
+        // Open directions
+        function openDirections(lat, lng, name) {
+            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${name}`;
+            window.open(mapsUrl, '_blank');
+        }
+
+        // Authentication
+        function handleAuth(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value || document.getElementById('email').value.split('@')[0];
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Validate password for signup mode
+            if (state.authMode === 'signup') {
+                if (!password || password.length < 6) {
+                    alert('⚠️ Password must be at least 6 characters long!');
+                    return;
+                }
+            }
+            
+            state.currentUser = { name, phone, email, password };
+            
+            localStorage.setItem('user', JSON.stringify(state.currentUser));
+            
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('userName').innerText = state.currentUser.name;
+            document.getElementById('userPhone').innerText = state.currentUser.phone;
+            
+            // Show greeting page instead of dashboard
+            document.getElementById('greetingUserName').innerText = state.currentUser.name;
+            showPage('greeting');
+            
+            // Show location modal if not already allowed
+            const savedLocation = localStorage.getItem('userLocation');
+            if (!savedLocation) {
+                console.log('Showing location modal...');
+                setTimeout(() => {
+                    showLocationModal();
+                    console.log('Location modal displayed');
+                }, 800);
+            }
+        }
+
+        function logout() {
+            state.currentUser = null;
+            localStorage.removeItem('user');
+            localStorage.removeItem('userLocation'); // Reset location permission
+            document.getElementById('authPage').reset?.();
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            showPage('landing');
+        }
+
+        // Location permission
+        function showLocationModal() {
+            const modal = document.getElementById('locationModal');
+            if (modal) {
+                modal.classList.add('active');
+                console.log('✅ Location modal shown successfully');
+            } else {
+                console.error('❌ Location modal element not found!');
+            }
+        }
+
+        function hideLocationModal() {
+            const modal = document.getElementById('locationModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function allowLocation() {
+            hideLocationModal();
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    state.userLocation = { latitude, longitude };
+                    localStorage.setItem('userLocation', JSON.stringify(state.userLocation));
+                    showSuccessMessage('✅ Location access enabled!');
+                },
+                (error) => {
+                    console.log('User denied location access');
+                }
+            );
+        }
+
+        function denyLocation() {
+            hideLocationModal();
+            showSuccessMessage('⚠️ Location disabled. Precision may be limited.');
+        }
+
+        // Emergency selection
+        function selectEmergency(type, icon = '⚠️') {
+            state.selectedEmergency = { type, icon };
+            document.getElementById('sosEmergencyType').innerText = type;
+            showPage('sos');
+            
+            // Hide info box initially
+            document.getElementById('sosInfoBox').style.display = 'none';
+        }
+
+        // Show Reassurance Modal
+        function showReassuranceModal(emergencyType) {
+            document.getElementById('reassuranceModal').classList.add('active');
+            
+            // Update details
+            const detailsHtml = `
+                <p><strong><i class="fas fa-clock"></i> Estimated Arrival:</strong> 2-3 minutes</p>
+                <p><strong><i class="fas fa-map-marker-alt"></i> Your Location:</strong> GPS Tracked</p>
+                <p><strong><i class="fas fa-phone"></i> Emergency:</strong> ${emergencyType}</p>
+                <p><strong><i class="fas fa-bell"></i> SMS:</strong> Sent to 9030774177</p>
+            `;
+            document.getElementById('reassuranceDetails').innerHTML = detailsHtml;
+            
+            // Countdown
+            let countdown = 3;
+            const countdownEl = document.getElementById('reassuranceCountdown');
+            countdownEl.innerText = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    countdownEl.innerText = countdown;
+                } else {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+
+        function closeReassurance() {
+            document.getElementById('reassuranceModal').classList.remove('active');
+            showPage('dashboard');
+        }
+
+        // SOS Upload with SMS Integration
+        async function uploadSOS() {
+            if (!state.currentUser) {w
+                alert('Not logged in!');
+                return;
+            }
+
+            // Get user location
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    try {
+                        const { latitude, longitude } = position.coords;
+                        const locationUrl = `https://maps.google.com?q=${latitude},${longitude}`;
+                        const emergencyType = state.selectedEmergency.type;
+                        
+                        // Use fixed responder number for all emergencies
+                        const emergencyNumber = '9030774177';
+                        
+                        const alert = {
+                            id: Date.now(),
+                            name: state.currentUser.name,
+                            phone: state.currentUser.phone,
+                            email: state.currentUser.email,
+                            emergencyType: emergencyType,
+                            location: { lat: latitude, lng: longitude },
+                            locationUrl: locationUrl,
+                            timestamp: new Date().toLocaleString(),
+                            status: 'Active',
+                            responderNumber: emergencyNumber,
+                            smsStatus: 'Processing'
+                        };
+                        
+                        state.alerts.push(alert);
+                        localStorage.setItem('alerts', JSON.stringify(state.alerts));
+                        
+                        // Prepare SMS message
+                        const smsMessage = `🚨 EMERGENCY ALERT\nType: ${emergencyType}\nName: ${state.currentUser.name}\nPhone: ${state.currentUser.phone}\nLocation: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}\nMap: ${locationUrl}`;
+                        
+                        // Try to send SMS via backend API
+                        try {
+                            const smsResponse = await fetch('/api/send-emergency-sms', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    to: emergencyNumber,
+                                    emergencyType: emergencyType,
+                                    senderName: state.currentUser.name,
+                                    senderPhone: state.currentUser.phone,
+                                    senderEmail: state.currentUser.email,
+                                    location: {
+                                        latitude: latitude,
+                                        longitude: longitude,
+                                        url: locationUrl
+                                    },
+                                    message: smsMessage,
+                                    timestamp: new Date().toISOString()
+                                })
+                            });
+
+                            if (smsResponse.ok) {
+                                const smsData = await smsResponse.json();
+                                alert.smsStatus = 'Sent';
+                                alert.smsMessageId = smsData.messageId || 'N/A';
+                                console.log('SMS sent successfully:', smsData);
+                            } else {
+                                console.warn('SMS API returned error:', smsResponse.status);
+                                alert.smsStatus = 'Backend Error';
+                            }
+                        } catch (apiError) {
+                            console.warn('Backend API not available - alert stored locally:', apiError);
+                            alert.smsStatus = 'Pending (No Backend)';
+                        }
+                        
+                        // Update alert in localStorage
+                        localStorage.setItem('alerts', JSON.stringify(state.alerts));
+                        
+                        // Show reassurance modal
+                        showReassuranceModal(emergencyType);
+                        
+                        // Show alert info
+                        document.getElementById('sosName').innerText = alert.name;
+                        document.getElementById('sosPhone').innerText = alert.phone;
+                        document.getElementById('sosEmergency').innerText = alert.emergencyType;
+                        document.getElementById('sosLocation').innerHTML = 
+                            `<a href="${locationUrl}" target="_blank" style="color: var(--secondary);">View on Maps</a>`;
+                        document.getElementById('sosInfoBox').style.display = 'block';
+                        
+                        // Create success message
+                        const smsStatusText = alert.smsStatus === 'Sent' ? '✅ SMS Sent' : '💾 Stored Locally';
+                        showSuccessMessage(`🚨 Emergency Alert Activated!<br>Type: ${emergencyType}<br>SMS sent to: 9030774177<br>${smsStatusText}<br>Help is on the way!`);
+                        
+                        // Log to admin
+                        console.log('Emergency SOS Alert Created:', alert);
+                        
+                    } catch (error) {
+                        console.error('Error uploading SOS:', error);
+                        alert('Error processing emergency alert. Please try again.');
+                    }
+                },
+                (error) => {
+                    console.error('Geolocation error:', error);
+                    let errorMsg = 'Unable to determine location. ';
+                    
+                    if (error.code === error.PERMISSION_DENIED) {
+                        errorMsg += 'Location permission denied. Please:\n\n';
+                        errorMsg += '1. Check browser permissions for location\n';
+                        errorMsg += '2. Clear browser site data and try again\n';
+                        errorMsg += '3. Enable GPS/Location on your device';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        errorMsg += 'Location information unavailable. Please:\n\n';
+                        errorMsg += '1. Enable GPS on your device\n';
+                        errorMsg += '2. Move to an open area\n';
+                        errorMsg += '3. Wait for GPS signal to acquire';
+                    } else if (error.code === error.TIMEOUT) {
+                        errorMsg += 'Location request timed out. Please:\n\n';
+                        errorMsg += '1. Check your GPS connection\n';
+                        errorMsg += '2. Move to a location with clear sky\n';
+                        errorMsg += '3. Try again';
+                    } else {
+                        errorMsg += 'Please enable GPS/Location services on your device.';
+                    }
+                    
+                    alert(errorMsg);
+                }
+            );
+        }
+
+        function cancelSOS() {
+            showPage('dashboard');
+        }
+
+        // Admin dashboard
+        function loadAdminDashboard() {
+            const alerts = JSON.parse(localStorage.getItem('alerts') || '[]');
+            state.alerts = alerts;
+            
+            const alertsList = document.getElementById('alertsList');
+            document.getElementById('alertCount').innerText = alerts.length;
+            
+            if (alerts.length === 0) {
+                alertsList.innerHTML = '<p style="text-align: center; color: var(--text);">No alerts yet</p>';
+                return;
+            }
+          // 
+            alertsList.innerHTML = alerts.map(alert => `
+                <div class="glass-card alert-card">
+                    <h3><i class="fas fa-bell"></i> ${alert.emergencyType}</h3>
+                    <div class="info-line" style="border-bottom: none; padding: 0.5rem 0; font-size: 0.9rem;">
+                        <strong>User:</strong> ${alert.name}
+                    </div>
+                    <div class="info-line" style="border-bottom: none; padding: 0.5rem 0; font-size: 0.9rem;">
+                        <strong>Phone:</strong> ${alert.phone}
+                    </div>
+                    <div class="info-line" style="border-bottom: none; padding: 0.5rem 0; font-size: 0.9rem;">
+                        <strong>Email:</strong> ${alert.email}
+                    </div>
+                    <div class="info-line" style="border-bottom: none; padding: 0.5rem 0; font-size: 0.9rem;">
+                        <strong>Location:</strong> <a href="${alert.locationUrl}" target="_blank" style="color: var(--secondary);">View</a>
+                    </div>
+                    <div class="alert-timestamp"><i class="far fa-clock"></i> ${alert.timestamp}</div>
+                    <div class="alert-status">⚡ ${alert.status}</div>
+                </div>
+            `).join('');
+        }
+
+        // Success message
+        function showSuccessMessage(message) {
+            const msg = document.createElement('div');
+            msg.className = 'success-message';
+            msg.innerHTML = message;
+            document.body.appendChild(msg);
+            
+            setTimeout(() => {
+                msg.style.animation = 'slideInRight 0.5s ease reverse';
+                setTimeout(() => msg.remove(), 500);
+            }, 4000);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createParticles();
+            
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) {
+                state.currentUser = JSON.parse(savedUser);
+                showDashboard();
+            } else {
+                // Show intro page first time
+                showPage('intro');
+            }
+            
+            // Load alerts for admin
+            loadAdminDashboard();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('sosPage').classList.contains('active')) {
+                cancelSOS();
+            }
+        });
+
+        // Dev shortcut to open admin
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'a') {
+                e.preventDefault();
+                showPage('admin');
+            }
+        });
+    </script>
+</body>
+</html>
