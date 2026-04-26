@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapid Crisis Response System</title>
-    <style>
+
+    <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- 👇 ADD THIS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapid Crisis Response System</title>
+
+  <style>
         * {
             margin: 0;
             padding: 0;
@@ -1717,7 +1724,7 @@
         </div>
     </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDemokey&libraries=marker"></script>
+
     <script>        // ============ UTILITIES ============
         const state = {
             currentUser: null,
@@ -2382,6 +2389,17 @@
     <button onclick="getLocationAndHospitals()">
   Find Nearest Hospitals
 </button>
+<button onclick="getLocationAndHospitals()">
+Find Nearest Hospitals
+</button>
+
+
+<div id="map" style="height: 400px;"></div>
+
+<h3>Nearby Hospitals</h3>
+<ul id="hospitalList"></ul>
+
+
     <script src="script.js"></script>
 </body>
 </html>
